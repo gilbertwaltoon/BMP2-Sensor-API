@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2021 Bosch Sensortec GmbH. All rights reserved.
+* Copyright (c) 2023 Bosch Sensortec GmbH. All rights reserved.
 *
 * BSD-3-Clause
 *
@@ -31,8 +31,8 @@
 * POSSIBILITY OF SUCH DAMAGE.
 *
 * @file       bmp2.c
-* @date       2021-05-21
-* @version    v1.0.1
+* @date       2023-04-28
+* @version    v1.0.2
 *
 */
 
@@ -361,6 +361,12 @@ int8_t bmp2_soft_reset(struct bmp2_dev *dev)
     uint8_t soft_rst_cmd = BMP2_SOFT_RESET_CMD;
 
     rslt = bmp2_set_regs(&reg_addr, &soft_rst_cmd, 1, dev);
+
+    if (rslt == BMP2_OK)
+    {
+        /* Soft-reset execution takes 2 ms */
+        dev->delay_us(BMP2_DELAY_US_STARTUP_TIME, dev->intf_ptr);
+    }
 
     return rslt;
 }

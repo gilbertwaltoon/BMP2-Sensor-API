@@ -1,5 +1,5 @@
 /**\
- * Copyright (c) 2021 Bosch Sensortec GmbH. All rights reserved.
+ * Copyright (c) 2023 Bosch Sensortec GmbH. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  **/
@@ -17,12 +17,11 @@
  *  @brief This internal API is used to get compensated pressure and temperature data.
  *
  *  @param[in] period   : Contains the delay in microseconds
- *  @param[in] conf     : Structure instance of bmp2_config.
  *  @param[in] dev      : Structure instance of bmp2_dev.
  *
  *  @return Status of execution.
  */
-static int8_t get_data(uint32_t period, struct bmp2_config *conf, struct bmp2_dev *dev);
+static int8_t get_data(uint32_t period, struct bmp2_dev *dev);
 
 /******************************************************************************/
 /*!            Functions                                        */
@@ -71,7 +70,7 @@ int main(void)
     bmp2_error_codes_print_result("bmp2_compute_meas_time", rslt);
 
     /* Read pressure and temperature data */
-    rslt = get_data(meas_time, &conf, &dev);
+    rslt = get_data(meas_time, &dev);
     bmp2_error_codes_print_result("get_data", rslt);
 
     bmp2_coines_deinit();
@@ -82,7 +81,7 @@ int main(void)
 /*!
  *  @brief This internal API is used to get compensated pressure and temperature data.
  */
-static int8_t get_data(uint32_t period, struct bmp2_config *conf, struct bmp2_dev *dev)
+static int8_t get_data(uint32_t period, struct bmp2_dev *dev)
 {
     int8_t rslt = BMP2_E_NULL_PTR;
     int8_t idx = 1;

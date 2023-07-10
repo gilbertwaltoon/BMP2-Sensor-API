@@ -1,5 +1,5 @@
 /**\
- * Copyright (c) 2021 Bosch Sensortec GmbH. All rights reserved.
+ * Copyright (c) 2023 Bosch Sensortec GmbH. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  **/
@@ -24,41 +24,41 @@ static uint8_t dev_addr;
 /*!
  * I2C read function map to COINES platform
  */
-BMP2_INTF_RET_TYPE bmp2_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr)
+BMP2_INTF_RET_TYPE bmp2_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, const void *intf_ptr)
 {
     dev_addr = *(uint8_t*)intf_ptr;
 
-    return coines_read_i2c(dev_addr, reg_addr, reg_data, (uint16_t)length);
+    return coines_read_i2c(COINES_I2C_BUS_0, dev_addr, reg_addr, reg_data, (uint16_t)length);
 }
 
 /*!
  * I2C write function map to COINES platform
  */
-BMP2_INTF_RET_TYPE bmp2_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, void *intf_ptr)
+BMP2_INTF_RET_TYPE bmp2_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, const void *intf_ptr)
 {
     dev_addr = *(uint8_t*)intf_ptr;
 
-    return coines_write_i2c(dev_addr, reg_addr, (uint8_t *)reg_data, (uint16_t)length);
+    return coines_write_i2c(COINES_I2C_BUS_0, dev_addr, reg_addr, (uint8_t *)reg_data, (uint16_t)length);
 }
 
 /*!
  * SPI read function map to COINES platform
  */
-BMP2_INTF_RET_TYPE bmp2_spi_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr)
+BMP2_INTF_RET_TYPE bmp2_spi_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, const void *intf_ptr)
 {
     dev_addr = *(uint8_t*)intf_ptr;
 
-    return coines_read_spi(dev_addr, reg_addr, reg_data, (uint16_t)length);
+    return coines_read_spi(COINES_SPI_BUS_0, dev_addr, reg_addr, reg_data, (uint16_t)length);
 }
 
 /*!
  * SPI write function map to COINES platform
  */
-BMP2_INTF_RET_TYPE bmp2_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, void *intf_ptr)
+BMP2_INTF_RET_TYPE bmp2_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, const void *intf_ptr)
 {
     dev_addr = *(uint8_t*)intf_ptr;
 
-    return coines_write_spi(dev_addr, reg_addr, (uint8_t *)reg_data, (uint16_t)length);
+    return coines_write_spi(COINES_SPI_BUS_0, dev_addr, reg_addr, (uint8_t *)reg_data, (uint16_t)length);
 }
 
 /*!
@@ -66,6 +66,7 @@ BMP2_INTF_RET_TYPE bmp2_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uin
  */
 void bmp2_delay_us(uint32_t period, void *intf_ptr)
 {
+    (void)intf_ptr;
     coines_delay_usec(period);
 }
 
@@ -122,10 +123,11 @@ void bmp2_error_codes_print_result(const char api_name[], int8_t rslt)
 int8_t bmp2_interface_selection(struct bmp2_dev *dev, uint8_t intf)
 {
     int8_t rslt = BMP2_OK;
+    struct coines_board_info board_info;
 
     if (dev != NULL)
     {
-        int16_t result = coines_open_comm_intf(COINES_COMM_INTF_USB);
+        int16_t result = coines_open_comm_intf(COINES_COMM_INTF_USB, NULL);
 
         if (result < COINES_SUCCESS)
         {
@@ -135,7 +137,13 @@ int8_t bmp2_interface_selection(struct bmp2_dev *dev, uint8_t intf)
             exit(result);
         }
 
-        coines_set_shuttleboard_vdd_vddio_config(0, 0);
+        (void)coines_get_board_info(&board_info);
+
+#if defined(PC)
+        setbuf(stdout, NULL);
+#endif
+
+        (void)coines_set_shuttleboard_vdd_vddio_config(0, 0);
         coines_delay_msec(100);
 
         /* Bus configuration : I2C */
@@ -148,7 +156,7 @@ int8_t bmp2_interface_selection(struct bmp2_dev *dev, uint8_t intf)
             dev->write = bmp2_i2c_write;
             dev->intf = BMP2_I2C_INTF;
 
-            coines_config_i2c_bus(COINES_I2C_BUS_0, COINES_I2C_STANDARD_MODE);
+            (void)coines_config_i2c_bus(COINES_I2C_BUS_0, COINES_I2C_STANDARD_MODE);
         }
         /* Bus configuration : SPI */
         else if (intf == BMP2_SPI_INTF)
@@ -160,7 +168,7 @@ int8_t bmp2_interface_selection(struct bmp2_dev *dev, uint8_t intf)
             dev->write = bmp2_spi_write;
             dev->intf = BMP2_SPI_INTF;
 
-            coines_config_spi_bus(COINES_SPI_BUS_0, COINES_SPI_SPEED_7_5_MHZ, COINES_SPI_MODE0);
+            (void)coines_config_spi_bus(COINES_SPI_BUS_0, COINES_SPI_SPEED_7_5_MHZ, COINES_SPI_MODE0);
         }
 
         /* Holds the I2C device addr or SPI chip selection */
@@ -171,7 +179,7 @@ int8_t bmp2_interface_selection(struct bmp2_dev *dev, uint8_t intf)
 
         coines_delay_msec(100);
 
-        coines_set_shuttleboard_vdd_vddio_config(3300, 3300);
+        (void)coines_set_shuttleboard_vdd_vddio_config(3300, 3300);
 
         coines_delay_msec(100);
     }
@@ -188,5 +196,14 @@ int8_t bmp2_interface_selection(struct bmp2_dev *dev, uint8_t intf)
  */
 void bmp2_coines_deinit(void)
 {
-    coines_close_comm_intf(COINES_COMM_INTF_USB);
+    (void)fflush(stdout);
+
+    (void)coines_set_shuttleboard_vdd_vddio_config(0, 0);
+    coines_delay_msec(100);
+
+    /* Coines interface reset */
+    coines_soft_reset();
+    coines_delay_msec(100);
+
+    (void)coines_close_comm_intf(COINES_COMM_INTF_USB, NULL);
 }

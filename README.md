@@ -1,4 +1,4 @@
-# BMP2 sensor API
+# BMP2 SensorAPI
 
 ### Sensor overview
 
@@ -32,4 +32,3 @@ BMP28X sensor driver supports the following Bosch MEMS sensors
 - [Community support page](https://community.bosch-sensortec.com)
 
 ---
-#### Copyright (C) 2021 Bosch Sensortec GmbH

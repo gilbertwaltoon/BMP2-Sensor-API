@@ -1,5 +1,5 @@
 /**\
- * Copyright (c) 2021 Bosch Sensortec GmbH. All rights reserved.
+ * Copyright (c) 2023 Bosch Sensortec GmbH. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  **/
@@ -35,7 +35,7 @@ extern "C" {
  *  @retval != BMP2_INTF_RET_SUCCESS -> Failure.
  *
  */
-BMP2_INTF_RET_TYPE bmp2_spi_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr);
+BMP2_INTF_RET_TYPE bmp2_spi_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, const void *intf_ptr);
 
 /*!
  *  @brief Function for reading the sensor's registers through I2C bus.
@@ -51,7 +51,7 @@ BMP2_INTF_RET_TYPE bmp2_spi_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t l
  *  @retval != BMP2_INTF_RET_SUCCESS -> Failure.
  *
  */
-BMP2_INTF_RET_TYPE bmp2_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr);
+BMP2_INTF_RET_TYPE bmp2_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, const void *intf_ptr);
 
 /*!
  *  @brief Function for writing the sensor's registers through SPI bus.
@@ -67,7 +67,7 @@ BMP2_INTF_RET_TYPE bmp2_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t l
  *  @retval != BMP2_INTF_RET_SUCCESS -> Failure.
  *
  */
-BMP2_INTF_RET_TYPE bmp2_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, void *intf_ptr);
+BMP2_INTF_RET_TYPE bmp2_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, const void *intf_ptr);
 
 /*!
  *  @brief Function for writing the sensor's registers through I2C bus.
@@ -83,7 +83,7 @@ BMP2_INTF_RET_TYPE bmp2_spi_write(uint8_t reg_addr, const uint8_t *reg_data, uin
  *  @retval != BMP2_INTF_RET_SUCCESS -> Failure.
  *
  */
-BMP2_INTF_RET_TYPE bmp2_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, void *intf_ptr);
+BMP2_INTF_RET_TYPE bmp2_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, const void *intf_ptr);
 
 /*!
  *  @brief This function provides the delay for required time (Microsecond) as per the input provided in some of the

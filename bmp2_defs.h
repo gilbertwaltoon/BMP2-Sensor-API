@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2021 Bosch Sensortec GmbH. All rights reserved.
+* Copyright (c) 2023 Bosch Sensortec GmbH. All rights reserved.
 *
 * BSD-3-Clause
 *
@@ -31,8 +31,8 @@
 * POSSIBILITY OF SUCH DAMAGE.
 *
 * @file       bmp2_defs.h
-* @date       2021-05-21
-* @version    v1.0.1
+* @date       2023-04-28
+* @version    v1.0.2
 *
 */
 
@@ -389,7 +389,8 @@ extern "C" {
  * @retval 0 for Success
  * @retval Non-zero for Failure
  */
-typedef BMP2_INTF_RET_TYPE (*bmp2_read_fptr_t)(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr);
+typedef BMP2_INTF_RET_TYPE (*bmp2_read_fptr_t)(uint8_t reg_addr, uint8_t *reg_data, uint32_t length,
+                                               const void *intf_ptr);
 
 /*!
  * @brief Bus communication function pointer which should be mapped to
@@ -404,7 +405,7 @@ typedef BMP2_INTF_RET_TYPE (*bmp2_read_fptr_t)(uint8_t reg_addr, uint8_t *reg_da
  * @retval Non-zero for Failure
  */
 typedef BMP2_INTF_RET_TYPE (*bmp2_write_fptr_t)(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length,
-                                                void *intf_ptr);
+                                                const void *intf_ptr);
 
 /*!
  * @brief Delay function pointer which should be mapped to

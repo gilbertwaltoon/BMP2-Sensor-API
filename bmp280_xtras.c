@@ -2,21 +2,15 @@
 #include <inttypes.h>
 #include "bmp2.h"
 #include "bmp280_xtras.h"
-//#include <string.h>
-//#include "esp_log.h"
+// #include <string.h>
+// #include "esp_log.h"
 #include "esp_err.h"
 #include "esp_check.h"
 
 static const char *TAG = "bmp280_xtras.c";
 
-/*!
- * @brief A wrapper around Bosch bmp2_init() used to
- * return an esp_err_t
- */
-esp_err_t bmp280_init(struct bmp2_dev *dev){
-    int8_t rslt;
-    rslt = bmp2_init(dev);
-
+esp_err_t bmp280_err(int8_t rslt)
+{
     switch (rslt)
     {
     case BMP2_E_NULL_PTR:
@@ -47,6 +41,31 @@ esp_err_t bmp280_init(struct bmp2_dev *dev){
     return ESP_OK;
 }
 
+/*!
+ * @brief A wrapper around Bosch bmp2_init() used to
+ * return an esp_err_t
+ */
+esp_err_t bmp280_init(struct bmp2_dev *dev)
+{
+    return bmp280_err(bmp2_init(dev));
+}
 
+/*!
+ * @brief A wrapper around Bosch bmp2_get_config() used to
+ * return an esp_err_t
+ */
+esp_err_t bmp280_get_config(struct bmp2_config *conf, struct bmp2_dev *dev)
+{
+    return bmp280_err(bmp2_get_config(conf, dev));
+}
+
+/*!
+ * @brief A wrapper around Bosch bmp2_set_config() used to
+ * return an esp_err_t
+ */
+esp_err_t bmp280_set_config(struct bmp2_config *conf, struct bmp2_dev *dev)
+{
+    return bmp280_err(bmp2_set_config(conf, dev));
+}
 
 

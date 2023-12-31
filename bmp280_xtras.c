@@ -90,9 +90,32 @@ static esp_err_t _bmp280_get_sensor_data(struct bmp2_data *comp_data, struct bmp
     return bmp280_err(bmp2_get_sensor_data(comp_data, dev));
 }
 
-esp_err_t bmp280_get_tp(uint32_t period, struct bmp2_config *conf,
-                        struct bmp2_dev *dev, struct bmp2_data *bmp280_data)
-{
+// esp_err_t bmp280_get_tp(uint32_t period, struct bmp2_config *conf,
+//                         struct bmp2_dev *dev, struct bmp2_data *bmp280_data)
+// {
+//     int8_t r;
+//     esp_err_t e;
+//     struct bmp2_status status;
+
+//     // ESP_LOGI(TAG, "Measurement delay : %lu us\n", (long unsigned int)period);
+//     do
+//     {
+//         r = bmp2_get_status(&status, dev);
+//         //bmp2_log_error_code(r);
+//     } while (r != BMP2_MEAS_DONE);
+
+//     /* Delay between measurements */
+//     dev->delay_us(period, dev->intf_ptr);
+//     e = _bmp280_get_sensor_data(bmp280_data, dev);
+
+// #ifdef BMP2_64BIT_COMPENSATION
+//     bmp280_data->pressure = (bmp280_data->pressure) / 256;
+// #endif
+
+//     return e;
+// }
+
+esp_err_t bmp280_get_tp(struct s_bmp280 *bmp280, struct bmp2_data *bmp280_data){
     int8_t r;
     esp_err_t e;
     struct bmp2_status status;
@@ -100,13 +123,13 @@ esp_err_t bmp280_get_tp(uint32_t period, struct bmp2_config *conf,
     // ESP_LOGI(TAG, "Measurement delay : %lu us\n", (long unsigned int)period);
     do
     {
-        r = bmp2_get_status(&status, dev);
+        r = bmp2_get_status(&status, &bmp280->dev);
         //bmp2_log_error_code(r);
     } while (r != BMP2_MEAS_DONE);
 
     /* Delay between measurements */
-    dev->delay_us(period, dev->intf_ptr);
-    e = _bmp280_get_sensor_data(bmp280_data, dev);
+    (&bmp280->dev)->delay_us(bmp280->sampling_time, (&bmp280->dev)->intf_ptr);
+    e = _bmp280_get_sensor_data(bmp280_data, &bmp280->dev);
 
 #ifdef BMP2_64BIT_COMPENSATION
     bmp280_data->pressure = (bmp280_data->pressure) / 256;
@@ -114,3 +137,4 @@ esp_err_t bmp280_get_tp(uint32_t period, struct bmp2_config *conf,
 
     return e;
 }
+

@@ -370,7 +370,7 @@ extern "C" {
 /*! @name           Function Pointers                             */
 /******************************************************************************/
 #ifndef BMP2_INTF_RET_TYPE
-#define BMP2_INTF_RET_TYPE                            int8_t
+#define BMP2_INTF_RET_TYPE                            int16_t
 #endif
 
 #ifndef BMP2_INTF_RET_SUCCESS
